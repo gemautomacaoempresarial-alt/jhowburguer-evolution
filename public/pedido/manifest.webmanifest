@@ -1,0 +1,15 @@
+{
+  "name": "Jhow Burguer — Pedidos",
+  "short_name": "Jhow Pedidos",
+  "description": "Cardápio e pedidos online do Jhow Burguer.",
+  "start_url": "/pedido",
+  "scope": "/pedido",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#1458EA",
+  "orientation": "any",
+  "icons": [
+    {"src":"/assets/gm-logo-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"/assets/gm-logo-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

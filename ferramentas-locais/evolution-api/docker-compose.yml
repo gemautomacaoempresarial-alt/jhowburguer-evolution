@@ -1,0 +1,94 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: atenderbem-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: evolution
+      POSTGRES_DB: evolution
+    volumes:
+      - evolution_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evolution -d evolution"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: atenderbem-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - evolution_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  evolution:
+    image: evoapicloud/evolution-api:v2.3.7
+    container_name: atenderbem-evolution
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SERVER_NAME: evolution
+      SERVER_TYPE: http
+      SERVER_PORT: 8080
+      SERVER_URL: http://localhost:8080
+      CORS_ORIGIN: "*"
+      CORS_METHODS: GET,POST,PUT,DELETE
+      CORS_CREDENTIALS: "true"
+
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: postgresql
+      DATABASE_CONNECTION_URI: postgresql://evolution:evolution@postgres:5432/evolution?schema=public
+      DATABASE_CONNECTION_CLIENT_NAME: atenderbem
+      DATABASE_SAVE_DATA_INSTANCE: "true"
+      DATABASE_SAVE_DATA_NEW_MESSAGE: "true"
+      DATABASE_SAVE_MESSAGE_UPDATE: "true"
+      DATABASE_SAVE_DATA_CONTACTS: "true"
+      DATABASE_SAVE_DATA_CHATS: "true"
+      DATABASE_SAVE_DATA_LABELS: "true"
+      DATABASE_SAVE_DATA_HISTORIC: "true"
+
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: redis://redis:6379/6
+      CACHE_REDIS_PREFIX_KEY: evolution
+      CACHE_REDIS_SAVE_INSTANCES: "false"
+      CACHE_LOCAL_ENABLED: "false"
+
+      AUTHENTICATION_API_KEY: atenderbem-local-test-key
+      AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES: "true"
+      QRCODE_LIMIT: 30
+      DEL_INSTANCE: "false"
+      LOG_LEVEL: ERROR,WARN,INFO,LOG
+      CONFIG_SESSION_PHONE_CLIENT: AtenderBem
+      CONFIG_SESSION_PHONE_NAME: Chrome
+      WEBHOOK_GLOBAL_ENABLED: "false"
+      WEBSOCKET_ENABLED: "false"
+      TELEMETRY_ENABLED: "false"
+      LANGUAGE: pt-BR
+    volumes:
+      - evolution_instances_data:/evolution/instances
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:8080').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+
+volumes:
+  evolution_postgres_data:
+  evolution_redis_data:
+  evolution_instances_data:

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#1458EA">
+  <meta name="description" content="Central de atendimento inteligente para WhatsApp">
+  <title>G&M Automação</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/gm-logo-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="toast-root" class="toast-root"></div>
+
+  <section id="login-view" class="login-view">
+    <div class="login-art">
+      <div class="login-brand"><span class="brand-mark"><img src="/assets/gm-logo.png" alt="Logo G&M Automação"></span><span>G&amp;M <b>Automação</b></span></div>
+      <div class="login-copy">
+        <span class="eyebrow">ATENDIMENTO INTELIGENTE</span>
+        <h1>Converse, organize e venda pelo WhatsApp.</h1>
+        <p>Central de atendimento com WhatsApp por QR Code, IA controlada, pedidos e tela da cozinha em tempo real.</p>
+        <div class="login-points">
+          <div><span>01</span><p>Caixa de entrada compartilhada</p></div>
+          <div><span>02</span><p>IA baseada no seu conhecimento</p></div>
+          <div><span>03</span><p>Banco SQLite local e seguro</p></div>
+        </div>
+      </div>
+      <div class="art-orb orb-one"></div><div class="art-orb orb-two"></div>
+    </div>
+    <div class="login-panel">
+      <form id="login-form" class="login-card">
+        <div class="mobile-brand"><span class="brand-mark"><img src="/assets/gm-logo.png" alt="Logo G&M Automação"></span><span>G&amp;M <b>Automação</b></span></div>
+        <span class="eyebrow">BEM-VINDO</span>
+        <h2>Entre no painel</h2>
+        <p class="muted">Use seu acesso cadastrado para entrar no sistema.</p>
+        <label>E-mail<input id="login-email" type="email" placeholder="seuemail@empresa.com.br" autocomplete="username" required></label>
+        <label>Senha<input id="login-password" type="password" placeholder="Digite sua senha" autocomplete="current-password" required></label>
+        <button class="btn btn-primary btn-large" type="submit">Entrar no sistema</button>
+        <div class="login-security-note"><strong>Acesso da equipe</strong><span>Use o usuário criado pelo administrador da empresa.</span></div>
+        <p id="login-error" class="form-error"></p>
+      </form>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <section id="business-hours-banner" class="business-hours-banner hidden" aria-live="assertive">
+      <div class="business-hours-banner-icon">🕒</div>
+      <div class="business-hours-banner-copy">
+        <span>EXPEDIENTE ENCERRADO</span>
+        <strong id="business-hours-banner-title">O horário de atendimento terminou.</strong>
+        <p id="business-hours-banner-text">Deseja prolongar o atendimento somente hoje?</p>
+      </div>
+      <div class="business-hours-banner-actions">
+        <button id="extend-business-hours" class="btn business-hours-extend-button" type="button">Prolongar atendimento</button>
+        <button id="dismiss-business-hours" class="btn business-hours-dismiss-button" type="button">Agora não</button>
+      </div>
+      <button id="close-business-hours-banner" class="business-hours-banner-close" type="button" aria-label="Fechar aviso">×</button>
+    </section>
+    <header class="sidebar">
+      <button id="mobile-menu" class="icon-button mobile-menu" aria-label="Abrir menu"></button>
+      <div id="brand-status" class="sidebar-brand" tabindex="0" role="button" data-tooltip="Filas, presença e conexão">
+        <span class="brand-mark"><img src="/assets/gm-logo.png" alt="Logo G&M Automação"></span><span class="brand-name">G&amp;M <b>Automação</b></span>
+      </div>
+      <div class="mobile-page-identity" aria-live="polite"><small id="page-kicker">PAINEL</small><strong id="page-title">Visão geral</strong></div>
+      <nav id="main-nav" class="main-nav" aria-label="Menu principal"></nav>
+      <div class="header-actions">
+        <div class="notification-center-wrap">
+          <button id="notifications-button" class="icon-button header-icon" type="button" aria-label="Notificações" aria-expanded="false" aria-controls="notification-panel" data-tooltip="Notificações">
+            <svg class="notification-bell" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/><path class="mute-slash" d="M4 4l16 16"/></svg>
+          </button>
+          <div id="notification-panel" class="notification-panel hidden" aria-label="Central de notificações"></div>
+        </div>
+        <div class="user-menu-wrap">
+          <button id="user-menu-button" class="user-avatar-button" type="button" aria-label="Abrir perfil" aria-expanded="false" aria-controls="user-menu-dropdown" data-tooltip="Meu perfil">
+            <span id="user-initials" class="avatar">AD</span>
+          </button>
+          <div id="user-menu-dropdown" class="user-menu-dropdown hidden" role="menu" aria-label="Menu do usuário">
+            <div class="user-menu-profile-card">
+              <div class="user-menu-avatar-wrap"><span id="user-menu-avatar" class="avatar">AD</span><i id="user-menu-status-dot" class="user-menu-status-dot"></i></div>
+              <div class="user-menu-identity"><strong id="user-name">Administrador</strong><small id="user-email">admin@teste.local</small><span id="user-role">Administrador</span></div>
+              <button id="profile-card-button" class="user-menu-edit" type="button" aria-label="Editar meu perfil" data-tooltip="Editar perfil">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+              </button>
+            </div>
+            <div class="user-menu-availability"><span id="user-menu-status-label">Disponível</span><small id="user-menu-sector">Atendimento</small></div>
+            <div class="user-menu-actions">
+              <button id="profile-button" type="button" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span><strong>Meu perfil</strong><small>Foto, nome, senha e preferências</small></span></button>
+              <button id="presence-button" type="button" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.2 2.2L15.8 9"/></svg><span><strong>Disponibilidade</strong><small>Status, pausas e distribuição</small></span></button>
+              <button id="theme-button" type="button" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8 8 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5z"/></svg><span><strong>Aparência</strong><small>Alternar tema claro ou escuro</small></span></button>
+              <button id="logout-button" class="danger" type="button" role="menuitem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span><strong>Sair</strong><small>Encerrar esta sessão</small></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button id="simulate-top" class="hidden" type="button"></button>
+    </header>
+    <button id="mobile-nav-backdrop" class="mobile-nav-backdrop hidden" type="button" aria-label="Fechar menu"></button>
+
+    <main class="main-area">
+      <section id="page-content" class="page-content"></section>
+    </main>
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Navegação rápida"></nav>
+  </div>
+
+  <div id="modal-root"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1458EA">
+  <meta name="description" content="Cardápio e pedidos online">
+  <title>Pedidos online</title>
+  <link rel="icon" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/gm-logo-192.png">
+  <link rel="manifest" href="/pedido/manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="/pedido/styles.css">
+</head>
+<body>
+  <div id="loading-screen" class="loading-screen" aria-live="polite">
+    <div class="spinner"></div>
+    <strong>Carregando o cardápio…</strong>
+  </div>
+
+  <div id="app" hidden>
+    <header class="site-header">
+      <div class="container header-content">
+        <a class="brand" href="/pedido" aria-label="Voltar ao cardápio">
+          <span class="brand-logo-wrap"><img id="brand-logo" src="/assets/jhow-burguer-logo.jpg" alt=""></span>
+          <span>
+            <strong id="brand-name">Pedidos online</strong>
+            <small id="brand-subtitle">Cardápio digital</small>
+          </span>
+        </a>
+        <a id="track-shortcut" class="header-action" href="#acompanhar" title="Acompanhar pedido">
+          <span>⌖</span>
+          <span class="desktop-label">Acompanhar</span>
+        </a>
+      </div>
+    </header>
+
+    <section id="table-session-bar" class="table-session-bar" hidden>
+      <div class="container table-session-content">
+        <div class="table-session-main"><span class="table-session-icon">🍽️</span><div><small>COMANDA VINCULADA</small><strong id="table-session-name">Mesa</strong><span id="table-session-status">Você está conectado a esta mesa.</span></div></div>
+        <div class="table-session-total"><small>Total da comanda</small><strong id="table-session-total">R$ 0,00</strong></div>
+        <div class="table-session-actions"><button id="my-tab" class="secondary" type="button">Minha comanda</button><button id="table-help" type="button">Preciso de algo</button><button id="request-bill" type="button">Solicitar conta</button></div>
+      </div>
+    </section>
+
+    <main id="catalog-page">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div id="store-status" class="status-pill"><span class="status-dot"></span><span>Verificando horário…</span></div>
+            <h1 id="hero-title">Seu pedido, do seu jeito.</h1>
+            <p id="hero-text">Escolha seus itens e receba as atualizações pelo WhatsApp.</p>
+            <div class="hero-benefits">
+              <span>✓ Pedido direto no painel</span>
+              <span>✓ Atualizações pelo WhatsApp</span>
+              <span>✓ Acompanhamento em tempo real</span>
+            </div>
+          </div>
+          <div class="hero-order-card">
+            <span class="hero-icon">🛍️</span>
+            <div>
+              <strong>Peça em poucos passos</strong>
+              <small>Escolha, confirme e acompanhe.</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container catalog-layout">
+        <div class="catalog-main">
+          <div class="catalog-tools">
+            <label class="search-box">
+              <span>⌕</span>
+              <input id="search-input" type="search" placeholder="Buscar no cardápio" autocomplete="off">
+            </label>
+            <div id="category-tabs" class="category-tabs" aria-label="Categorias"></div>
+          </div>
+
+          <div id="closed-banner" class="notice warning" hidden>
+            <strong>A loja está fechada no momento.</strong>
+            <span id="closed-message">Consulte o horário para fazer seu pedido.</span>
+          </div>
+
+          <div id="lunch-banner" class="lunch-banner" hidden>
+            <div><span>🍽️</span><div><strong>Cardápio do almoço</strong><small id="lunch-banner-text">Marmitex disponível das 09:00 às 14:00.</small></div></div>
+            <button id="open-lunch-category" type="button">Ver marmitex</button>
+          </div>
+
+          <div id="catalog-content" class="catalog-content"></div>
+          <div id="empty-state" class="empty-state" hidden>
+            <span>🔎</span>
+            <h2>Nenhum produto encontrado</h2>
+            <p>Tente buscar por outro nome ou categoria.</p>
+          </div>
+        </div>
+
+        <aside id="cart-panel" class="cart-panel">
+          <div class="cart-heading">
+            <div>
+              <span class="eyebrow">Seu pedido</span>
+              <h2>Carrinho</h2>
+            </div>
+            <button id="close-cart" class="icon-button mobile-only" type="button" aria-label="Fechar carrinho">×</button>
+          </div>
+          <div id="cart-empty" class="cart-empty">
+            <span>🛒</span>
+            <strong>Seu carrinho está vazio</strong>
+            <small>Adicione produtos do cardápio para começar.</small>
+          </div>
+          <div id="cart-items" class="cart-items"></div>
+          <div id="cart-summary" class="cart-summary" hidden>
+            <div><span>Subtotal</span><strong id="cart-subtotal">R$ 0,00</strong></div>
+            <div id="delivery-line"><span>Taxa de entrega</span><strong id="cart-delivery">A calcular</strong></div>
+            <div class="cart-total"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div>
+            <button id="checkout-button" class="primary-button" type="button">Continuar pedido</button>
+            <small class="secure-note">🔒 Seus dados são usados somente para este pedido.</small>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <main id="tracking-page" class="tracking-page" hidden>
+      <section class="container tracking-wrap">
+        <a class="back-link" href="/pedido">← Voltar ao cardápio</a>
+        <div id="tracking-card" class="tracking-card">
+          <div class="tracking-loading"><div class="spinner"></div><span>Buscando pedido…</span></div>
+        </div>
+      </section>
+    </main>
+
+    <button id="mobile-cart-button" class="mobile-cart-button" type="button" hidden aria-label="Abrir carrinho">
+      <span class="mobile-cart-icon" aria-hidden="true">🛒</span>
+      <span class="cart-count" id="mobile-cart-count">0</span>
+      <span class="mobile-cart-label">Abrir carrinho</span>
+      <strong id="mobile-cart-total">R$ 0,00</strong>
+    </button>
+
+    <div id="cart-backdrop" class="backdrop" hidden></div>
+
+    <div id="checkout-modal" class="modal-shell" hidden role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+      <div class="modal-backdrop" data-close-checkout></div>
+      <div class="checkout-modal">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow">Finalização</span>
+            <h2 id="checkout-title">Dados do pedido</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-checkout aria-label="Fechar">×</button>
+        </div>
+        <form id="checkout-form" novalidate>
+          <div class="checkout-grid">
+            <div class="checkout-fields">
+              <section class="form-section">
+                <h3>Seus dados</h3>
+                <div class="field-grid two-columns">
+                  <label class="field">
+                    <span>Nome completo *</span>
+                    <input name="name" autocomplete="name" maxlength="120" required placeholder="Como podemos chamar você?">
+                  </label>
+                  <label class="field">
+                    <span>WhatsApp com DDD *</span>
+                    <input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="(38) 99999-9999">
+                    <small id="whatsapp-identified" class="identified-contact" hidden>✓ Número identificado pelo link recebido no WhatsApp</small>
+                  </label>
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h3>Como deseja receber?</h3>
+                <div class="segmented-control" id="fulfillment-control">
+                  <label data-fulfillment-option="delivery"><input type="radio" name="fulfillmentMethod" value="delivery" checked><span>🛵 Entrega</span></label>
+                  <label data-fulfillment-option="pickup"><input type="radio" name="fulfillmentMethod" value="pickup"><span>🏪 Retirada</span></label>
+                  <label data-fulfillment-option="table" hidden><input type="radio" name="fulfillmentMethod" value="table"><span>🍽️ Consumir na mesa</span></label>
+                </div>
+                <label id="address-field" class="field">
+                  <span>Endereço completo *</span>
+                  <textarea name="address" rows="3" maxlength="500" placeholder="Rua, número, bairro e referência"></textarea>
+                </label>
+                <div id="pickup-info" class="notice info" hidden>
+                  <strong>Endereço para retirada</strong>
+                  <span id="pickup-address">Consulte a equipe.</span>
+                </div>
+                <div id="table-checkout-info" class="notice table-info" hidden>
+                  <strong id="table-checkout-name">Pedido vinculado à mesa</strong>
+                  <span>Os itens serão adicionados à comanda desta mesa.</span>
+                </div>
+              </section>
+
+              <section class="form-section" id="payment-section">
+                <h3>Pagamento</h3>
+                <div class="payment-options">
+                  <label data-payment-option="pix"><input type="radio" name="paymentMethod" value="pix" checked><span><b>Pix</b><small>Pagamento rápido</small></span></label>
+                  <label data-payment-option="card"><input type="radio" name="paymentMethod" value="card"><span><b>Cartão</b><small>Na entrega ou retirada</small></span></label>
+                  <label data-payment-option="cash"><input type="radio" name="paymentMethod" value="cash"><span><b>Dinheiro</b><small>Informe se precisa de troco</small></span></label>
+                </div>
+                <div id="cash-change-fields" class="cash-change-fields" hidden>
+                  <span class="field-title">Precisa de troco?</span>
+                  <div class="segmented-control cash-change-options">
+                    <label><input type="radio" name="needsChange" value="yes"><span>Sim</span></label>
+                    <label><input type="radio" name="needsChange" value="no"><span>Não</span></label>
+                  </div>
+                  <label id="change-for-field" class="field" hidden>
+                    <span>Troco para qual valor? *</span>
+                    <input name="changeFor" type="text" inputmode="decimal" maxlength="20" placeholder="Ex.: R$ 100,00">
+                  </label>
+                </div>
+                <label class="field">
+                  <span>Observações <small>(opcional)</small></span>
+                  <textarea name="notes" rows="3" maxlength="500" placeholder="Ex.: sem cebola, retirar molho…"></textarea>
+                </label>
+              </section>
+
+              <label class="consent-box">
+                <input name="whatsappOptIn" type="checkbox" required>
+                <span>Autorizo receber a confirmação e as atualizações deste pedido pelo WhatsApp informado.</span>
+              </label>
+              <div id="checkout-error" class="form-error" hidden></div>
+            </div>
+
+            <aside class="checkout-summary">
+              <h3>Resumo</h3>
+              <div id="checkout-items" class="checkout-items"></div>
+              <div class="summary-values">
+                <div><span>Subtotal</span><strong id="checkout-subtotal">R$ 0,00</strong></div>
+                <div><span>Entrega</span><strong id="checkout-delivery">R$ 0,00</strong></div>
+                <div class="total"><span>Total</span><strong id="checkout-total">R$ 0,00</strong></div>
+              </div>
+              <button id="submit-order" class="primary-button" type="submit">
+                <span>Confirmar pedido</span>
+              </button>
+              <small id="checkout-notice">O pedido será enviado ao painel e ficará aguardando confirmação da equipe.</small>
+            </aside>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="lunch-modal" class="modal-shell" hidden role="dialog" aria-modal="true" aria-labelledby="lunch-modal-title">
+      <div class="modal-backdrop" data-close-lunch></div>
+      <div class="simple-modal lunch-customizer">
+        <div class="modal-header">
+          <div><span class="eyebrow">MARMITEX DO ALMOÇO</span><h2 id="lunch-modal-title">Monte sua marmitex</h2></div>
+          <button class="icon-button" type="button" data-close-lunch aria-label="Fechar">×</button>
+        </div>
+        <form id="lunch-form">
+          <div id="lunch-product-summary" class="lunch-product-summary"></div>
+          <section id="lunch-meat-section" class="lunch-step">
+            <h3>1. Escolha a carne</h3>
+            <div class="lunch-options two">
+              <label><input type="radio" name="lunchMeat" value="Filé de Peixe Empanado"><span>Filé de peixe empanado</span></label>
+              <label><input type="radio" name="lunchMeat" value="Estrogonofe de Frango"><span>Estrogonofe de frango</span></label>
+            </div>
+          </section>
+          <section class="lunch-step">
+            <h3>2. Escolha o arroz</h3>
+            <div class="lunch-options three">
+              <label><input type="radio" name="lunchRice" value="Arroz Branco" required><span>Arroz branco</span></label>
+              <label><input type="radio" name="lunchRice" value="Arroz à Grega"><span>Arroz à grega</span></label>
+              <label><input type="radio" name="lunchRice" value="Sem Arroz"><span>Sem arroz</span></label>
+            </div>
+          </section>
+          <section class="lunch-step">
+            <h3>3. Escolha o feijão</h3>
+            <div class="lunch-options three">
+              <label><input type="radio" name="lunchBeans" value="Feijão Tropeiro" required><span>Feijão tropeiro</span></label>
+              <label><input type="radio" name="lunchBeans" value="Feijão de Caldo"><span>Feijão de caldo</span></label>
+              <label><input type="radio" name="lunchBeans" value="Sem Feijão"><span>Sem feijão</span></label>
+            </div>
+          </section>
+          <section class="lunch-step">
+            <h3>4. Escolha 2 guarnições</h3>
+            <div class="lunch-options three">
+              <label><input type="checkbox" name="lunchGarnish" value="Batata Frita"><span>Batata frita</span></label>
+              <label><input type="checkbox" name="lunchGarnish" value="Macarronese"><span>Macarronese</span></label>
+              <label><input type="checkbox" name="lunchGarnish" value="Purê de Batata"><span>Purê de batata</span></label>
+            </div>
+            <small id="lunch-garnish-help">Selecione exatamente duas opções.</small>
+          </section>
+          <section class="lunch-step">
+            <h3>5. Salada</h3>
+            <div class="lunch-options two">
+              <label><input type="radio" name="lunchSalad" value="Com Salada" required><span>Com salada</span></label>
+              <label><input type="radio" name="lunchSalad" value="Sem Salada"><span>Sem salada</span></label>
+            </div>
+          </section>
+          <label class="field lunch-quantity"><span>Quantidade</span><input name="lunchQuantity" type="number" min="1" max="20" value="1"></label>
+          <div id="lunch-error" class="form-error" hidden></div>
+          <button class="primary-button" type="submit">Adicionar marmitex ao carrinho</button>
+        </form>
+      </div>
+    </div>
+
+
+    <div id="table-confirm-modal" class="modal-shell small" hidden role="dialog" aria-modal="true" aria-labelledby="table-confirm-title">
+      <div class="modal-backdrop"></div>
+      <div class="simple-modal table-confirm-card">
+        <div class="table-confirm-icon">🍽️</div>
+        <span class="eyebrow">VÍNCULO DA MESA</span>
+        <h2 id="table-confirm-title">Confirmar mesa</h2>
+        <p id="table-confirm-text">Você deseja vincular este aparelho à mesa?</p>
+        <div id="table-confirm-error" class="form-error" hidden></div>
+        <button id="confirm-table" class="primary-button" type="button">Sim, vincular a esta mesa</button>
+        <a class="table-cancel-link" href="/pedido">Voltar ao cardápio comum</a>
+      </div>
+    </div>
+
+    <div id="my-tab-modal" class="modal-shell" hidden role="dialog" aria-modal="true" aria-labelledby="my-tab-title">
+      <div class="modal-backdrop" data-close-my-tab></div>
+      <div class="simple-modal my-tab-modal">
+        <div class="modal-header">
+          <div><span class="eyebrow">Mesa vinculada</span><h2 id="my-tab-title">Minha comanda</h2></div>
+          <button class="icon-button" type="button" data-close-my-tab aria-label="Fechar">×</button>
+        </div>
+        <div id="my-tab-content" class="my-tab-content"></div>
+      </div>
+    </div>
+
+    <div id="table-help-modal" class="modal-shell" hidden role="dialog" aria-modal="true" aria-labelledby="table-help-title">
+      <div class="modal-backdrop" data-close-table-help></div>
+      <div class="simple-modal table-help-modal">
+        <div class="modal-header">
+          <div><span class="eyebrow">Atendimento da mesa</span><h2 id="table-help-title">Como podemos ajudar?</h2></div>
+          <button class="icon-button" type="button" data-close-table-help aria-label="Fechar">×</button>
+        </div>
+        <div class="table-help-grid">
+          <button type="button" data-table-request="waiter"><span>🛎️</span><strong>Chamar garçom</strong><small>Preciso falar com a equipe</small></button>
+          <button type="button" data-table-request="napkins"><span>🧻</span><strong>Guardanapos</strong><small>Trazer guardanapos à mesa</small></button>
+          <button type="button" data-table-request="cutlery"><span>🍴</span><strong>Talheres</strong><small>Preciso de talheres</small></button>
+          <button type="button" data-table-request="change"><span>✏️</span><strong>Alterar pedido</strong><small>Quero conversar sobre um pedido</small></button>
+          <button type="button" data-table-request="problem"><span>⚠️</span><strong>Informar problema</strong><small>Algo não saiu como esperado</small></button>
+        </div>
+        <label class="field table-help-message"><span>Detalhes <small>(opcional)</small></span><textarea id="table-help-message" rows="3" maxlength="180" placeholder="Conte rapidamente o que você precisa"></textarea></label>
+        <div id="table-help-error" class="form-error" hidden></div>
+      </div>
+    </div>
+
+    <div id="track-modal" class="modal-shell small" hidden role="dialog" aria-modal="true" aria-labelledby="track-title">
+      <div class="modal-backdrop" data-close-track></div>
+      <div class="simple-modal">
+        <div class="modal-header">
+          <div><span class="eyebrow">Acompanhamento</span><h2 id="track-title">Abrir meu pedido</h2></div>
+          <button class="icon-button" type="button" data-close-track>×</button>
+        </div>
+        <p>Use o link recebido no WhatsApp. Você também pode colar o código de acompanhamento abaixo.</p>
+        <form id="track-form">
+          <label class="field"><span>Código de acompanhamento</span><input name="token" maxlength="48" placeholder="Cole o código do pedido"></label>
+          <div id="track-error" class="form-error" hidden></div>
+          <button class="primary-button" type="submit">Acompanhar pedido</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  </div>
+
+  <script src="/pedido/app.js" defer></script>
+</body>
+</html>

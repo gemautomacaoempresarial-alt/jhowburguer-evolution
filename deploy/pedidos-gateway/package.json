@@ -1,0 +1,14 @@
+{
+  "name": "jhow-burguer-pedidos-gateway",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Domínio público exclusivo do cardápio e dos pedidos Jhow Burguer.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

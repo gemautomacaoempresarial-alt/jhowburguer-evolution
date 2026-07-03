@@ -1,0 +1,40 @@
+{
+  "name": "gm-automacao",
+  "version": "3.11.0",
+  "private": true,
+  "description": "Sistema Jhow Burguer para atendimento WhatsApp, pedidos, mesas, cozinha e gestão, preparado para Discloud e PostgreSQL.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node --no-warnings src/server.js",
+    "dev": "node --no-warnings --watch src/server.js",
+    "reset-db": "node --no-warnings scripts/reset-db.js",
+    "check": "node --no-warnings scripts/smoke-test.js",
+    "test:webhook": "node --no-warnings scripts/test-webhook-payload.js",
+    "clean-data": "node --no-warnings scripts/clean-operational-data.js",
+    "test:contacts": "node --no-warnings scripts/test-contact-identity.js",
+    "generate-secrets": "node scripts/generate-secrets.js",
+    "test:tables": "node --no-warnings scripts/test-table-history.js",
+    "migrate:sqlite-to-postgres": "node --no-warnings scripts/migrate-sqlite-to-postgres.js",
+    "check:postgres-sql": "node --no-warnings scripts/test-postgres-translation.js",
+    "check:postgres-connection": "node --no-warnings scripts/test-postgres-connection.js",
+    "reset-history": "node --no-warnings scripts/reset-site-history.js",
+    "test:context": "node --no-warnings scripts/test-contextual-orders.js",
+    "test:media": "node --no-warnings scripts/test-media-replies.js",
+    "test:catalog": "node --no-warnings scripts/test-catalog-navigation.js",
+    "test:hours": "node --no-warnings scripts/test-business-hours.js",
+    "test:lunch": "node --no-warnings scripts/test-lunch-menu.js",
+    "test:mobile": "node --no-warnings scripts/test-mobile-ui.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1",
+    "pg": "^8.16.3"
+  }
+}

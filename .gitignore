@@ -1,3 +1,14 @@
 .env
 .env.*
+!.env.example
+node_modules/
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+backups/*
+!backups/.gitkeep
 *.log
+diagnostico-evolution.txt
+.DS_Store
+public/uploads/messages/*
+!public/uploads/messages/.gitkeep
