@@ -1,13 +1,10 @@
-JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v4
+JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v5
 ==================================================
 
-CORREÇÕES
----------
-- Fixa DATABASE_PROVIDER=postgresql diretamente na imagem.
-- Ignora o entrypoint original da Evolution.
-- Não usa runWithProvider.js.
-- Não tenta recriar prisma/migrations durante a inicialização.
-- Executa diretamente o schema PostgreSQL.
+CORREÇÃO
+--------
+Esta versão mantém o ENTRYPOINT oficial da Evolution API e apenas libera
+permissão de escrita em /evolution/prisma, pasta utilizada no db:deploy.
 
 ARQUIVOS NA RAIZ DO GITHUB
 --------------------------
@@ -17,50 +14,49 @@ discloud.config
 .gitignore
 README_DEPLOY.txt
 
-PASSOS
-------
-1. Apague os cinco arquivos da versão Docker anterior.
-2. Envie estes cinco arquivos diretamente para a raiz do repositório.
-3. Faça commit.
-4. Na Discloud, faça Rebuild/Redeploy completo pelo GitHub.
+Não misture com package.json, src, prisma, vendor ou arquivos .tgz.
 
-VARIÁVEIS
----------
-Você pode remover:
-DATABASE_URL
-DATABASE_PROVIDER
-
-O Dockerfile já fixa DATABASE_PROVIDER=postgresql.
-
-Mantenha:
-DATABASE_ENABLED=true
-DATABASE_CONNECTION_URI=postgresql://USUARIO:SENHA@HOST:5432/BANCO
-DATABASE_CONNECTION_CLIENT_NAME=jhowburguer_evolution
-
-AUTHENTICATION_API_KEY=UMA_NOVA_CHAVE
+VARIÁVEIS CORRETAS DA EVOLUTION
+-------------------------------
+DOCKER_ENV=true
 SERVER_TYPE=http
 SERVER_PORT=8080
 SERVER_URL=https://jhowburguerevolution.discloud.app
+
+AUTHENTICATION_API_KEY=UMA_NOVA_CHAVE
+
+DATABASE_ENABLED=true
+DATABASE_PROVIDER=postgresql
+DATABASE_CONNECTION_URI=postgresql://elite:NOVA_SENHA@g446:5432/jhowburguer-evolution-db
+DATABASE_CONNECTION_CLIENT_NAME=jhowburguer_evolution
+
+CACHE_LOCAL_ENABLED=true
+CACHE_REDIS_ENABLED=false
 
 CORS_ORIGIN=https://jhowburgueratender.discloud.app
 CORS_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
 CORS_CREDENTIALS=true
 
-CACHE_LOCAL_ENABLED=true
-CACHE_REDIS_ENABLED=false
 QRCODE_LIMIT=30
 WEBSOCKET_ENABLED=true
 
-LOG ESPERADO
-------------
-[JHOW CUSTOM V4] PostgreSQL fixado e inicialização personalizada
+IMPORTANTE
+----------
+Não use o banco do painel:
+postgresql://adminuser:...@jhowburguer-db:5432/jhowburguer-db
 
-Depois:
-Prisma schema loaded from prisma/postgresql-schema.prisma
-Migration succeeded ou No pending migrations
-HTTP - ON: 8080
+Use o banco exclusivo da Evolution:
+postgresql://elite:...@g446:5432/jhowburguer-evolution-db
+
+PASSOS
+------
+1. Apague os arquivos antigos do repositório da Evolution.
+2. Envie estes cinco arquivos para a raiz.
+3. Faça commit.
+4. Corrija DATABASE_CONNECTION_URI na Discloud.
+5. Faça Rebuild/Redeploy completo.
 
 SEGURANÇA
 ---------
-Troque a senha do PostgreSQL e a AUTHENTICATION_API_KEY que apareceram
-em mensagens ou logs antes de liberar a aplicação.
+Troque a senha do PostgreSQL e a AUTHENTICATION_API_KEY, pois foram
+expostas em mensagens e logs.
