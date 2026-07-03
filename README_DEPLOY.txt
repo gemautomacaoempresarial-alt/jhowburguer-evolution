@@ -1,23 +1,27 @@
-JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v5
+JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v6
 ==================================================
 
 CORREÇÃO
 --------
-Esta versão mantém o ENTRYPOINT oficial da Evolution API e apenas libera
-permissão de escrita em /evolution/prisma, pasta utilizada no db:deploy.
+A imagem oficial tenta recriar /evolution/prisma/migrations durante o início.
+Na Discloud essa pasta está sem permissão de escrita.
+
+A v6 substitui o script oficial e executa as migrações em:
+/tmp/evolution-prisma
 
 ARQUIVOS NA RAIZ DO GITHUB
 --------------------------
 Dockerfile
+deploy_database.sh
 discloud.config
 .dockerignore
 .gitignore
 README_DEPLOY.txt
 
-Não misture com package.json, src, prisma, vendor ou arquivos .tgz.
+Não use package.json, src, prisma, vendor ou arquivos .tgz nesse repositório.
 
-VARIÁVEIS CORRETAS DA EVOLUTION
--------------------------------
+VARIÁVEIS CORRETAS DA APLICAÇÃO jhowburguerevolution
+-----------------------------------------------------
 DOCKER_ENV=true
 SERVER_TYPE=http
 SERVER_PORT=8080
@@ -40,23 +44,25 @@ CORS_CREDENTIALS=true
 QRCODE_LIMIT=30
 WEBSOCKET_ENABLED=true
 
-IMPORTANTE
-----------
-Não use o banco do painel:
+APAGUE DA EVOLUTION
+-------------------
+DATABASE_URL
+
+NÃO USE NA EVOLUTION
+--------------------
 postgresql://adminuser:...@jhowburguer-db:5432/jhowburguer-db
 
-Use o banco exclusivo da Evolution:
-postgresql://elite:...@g446:5432/jhowburguer-evolution-db
+Esse endereço pertence ao painel G&M.
 
-PASSOS
-------
-1. Apague os arquivos antigos do repositório da Evolution.
-2. Envie estes cinco arquivos para a raiz.
-3. Faça commit.
-4. Corrija DATABASE_CONNECTION_URI na Discloud.
-5. Faça Rebuild/Redeploy completo.
+LOG ESPERADO
+------------
+[JHOW V6] Preparando migrações PostgreSQL em /tmp
+[JHOW V6] Executando Prisma migrate deploy
+[JHOW V6] Migrações concluídas
+
+Se não aparecer [JHOW V6], a Discloud está usando outro repositório,
+outra branch ou um build antigo.
 
 SEGURANÇA
 ---------
-Troque a senha do PostgreSQL e a AUTHENTICATION_API_KEY, pois foram
-expostas em mensagens e logs.
+Troque as senhas e chaves que apareceram em mensagens e logs.

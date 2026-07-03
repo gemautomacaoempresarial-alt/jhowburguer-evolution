@@ -3,10 +3,11 @@ FROM docker.io/evoapicloud/evolution-api:v2.3.6
 USER root
 WORKDIR /evolution
 
-# A Discloud pode executar o contêiner com um usuário sem permissão
-# para recriar /evolution/prisma/migrations. A Evolution precisa escrever
-# nessa pasta durante o npm run db:deploy.
-RUN chmod -R a+rwX /evolution/prisma
+# Substitui somente o script de migração da imagem oficial.
+# Na Discloud, /evolution/prisma pode ficar sem permissão de escrita.
+# O novo script copia schema/migrations para /tmp, que é gravável.
+COPY deploy_database.sh /evolution/Docker/scripts/deploy_database.sh
+RUN chmod 755 /evolution/Docker/scripts/deploy_database.sh
 
 ENV DOCKER_ENV=true
 ENV DATABASE_PROVIDER=postgresql
