@@ -1,14 +1,17 @@
-JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v2
+JHOW BURGUER EVOLUTION API - DISCLOUD / DOCKER v3
 ==================================================
 
-CORREÇÃO DESTA VERSÃO
----------------------
-Corrige:
+Esta versão corrige definitivamente:
 cp: can't create directory './prisma/migrations': Permission denied
 
-A imagem original tenta apagar e copiar prisma/migrations quando inicia.
-Nesta versão, as migrações PostgreSQL são copiadas durante o build,
-e a inicialização executa diretamente o Prisma sem recriar a pasta.
+COMO FUNCIONA
+-------------
+A imagem oficial da Evolution inicia executando:
+Docker/scripts/deploy_database.sh
+
+Esta versão substitui esse script dentro da imagem.
+As migrações PostgreSQL são copiadas durante o build, quando há permissão,
+e no início é executado apenas o Prisma migrate deploy.
 
 ARQUIVOS NA RAIZ DO GITHUB
 --------------------------
@@ -18,45 +21,30 @@ discloud.config
 .gitignore
 README_DEPLOY.txt
 
-Apague os arquivos antigos do repositório da Evolution e envie estes
-arquivos diretamente para a raiz. Depois faça Rebuild/Redeploy.
+Não misture com package.json, src, prisma, vendor ou arquivos .tgz.
 
-VARIÁVEIS ESSENCIAIS NA DISCLOUD
---------------------------------
-SERVER_TYPE=http
-SERVER_PORT=8080
-SERVER_URL=https://jhowburguerevolution.discloud.app
+PASSOS
+------
+1. Apague os arquivos antigos do repositório jhowburguer-evolution.
+2. Envie estes cinco arquivos diretamente para a raiz.
+3. Confirme no GitHub que o Dockerfile contém:
+   [JHOW CUSTOM] Executando migrações PostgreSQL já preparadas
+4. Faça commit.
+5. Na Discloud, faça Rebuild/Redeploy completo.
 
-CORS_ORIGIN=https://jhowburgueratender.discloud.app
-CORS_METHODS=GET,POST,PUT,PATCH,DELETE,OPTIONS
-CORS_CREDENTIALS=true
+LOG CORRETO
+-----------
+O novo log precisa mostrar:
+[JHOW CUSTOM] Executando migrações PostgreSQL já preparadas
+[JHOW CUSTOM] Migrações concluídas
 
-AUTHENTICATION_API_KEY=UMA_NOVA_CHAVE_FORTE
+Se continuar aparecendo:
+> evolution-api@2.3.6 db:deploy
+cp: can't create directory
 
-DATABASE_ENABLED=true
-DATABASE_PROVIDER=postgresql
-DATABASE_CONNECTION_URI=postgresql://USUARIO:SENHA@HOST:5432/BANCO
-DATABASE_CONNECTION_CLIENT_NAME=jhowburguer_evolution
-
-DATABASE_SAVE_DATA_INSTANCE=true
-DATABASE_SAVE_DATA_NEW_MESSAGE=true
-DATABASE_SAVE_MESSAGE_UPDATE=true
-DATABASE_SAVE_DATA_CONTACTS=true
-DATABASE_SAVE_DATA_CHATS=true
-DATABASE_SAVE_DATA_LABELS=true
-DATABASE_SAVE_DATA_HISTORIC=true
-
-CACHE_REDIS_ENABLED=false
-CACHE_LOCAL_ENABLED=true
-
-QRCODE_LIMIT=30
-WEBSOCKET_ENABLED=true
-
-RESULTADO ESPERADO
-------------------
-O log deve passar das migrações e mostrar o servidor HTTP ativo na porta 8080.
+então a Discloud ainda está usando o Dockerfile antigo ou outro repositório/branch.
 
 SEGURANÇA
 ---------
-Troque a senha do PostgreSQL e a chave da API caso tenham sido exibidas
-em mensagens, imagens ou logs compartilhados.
+A senha do PostgreSQL apareceu em logs compartilhados.
+Troque-a e atualize DATABASE_CONNECTION_URI antes do uso real.
